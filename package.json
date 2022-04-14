@@ -2,9 +2,13 @@
   "name": "@viniciusgdr/blaze",
   "version": "1.0.0",
   "description": "A API Blaze for Game Crash",
-  "main": "src/index",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "tsc",
+    "build:tsc": "tsc",
+    "example": "ts-node Example/example-crash.ts",
+    "example:double": "ts-node Example/example-double.ts"
   },
   "repository": {
     "type": "git",
