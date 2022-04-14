@@ -11,3 +11,7 @@ export interface IBlazeDoubleConnection {
     closeSocket: () => void;
     sendToSocket: (data: any) => void;
 }
+
+export interface IMakeConnectionOptions {
+    needCloseWithCompletedSession?: boolean
+}

@@ -1,8 +1,10 @@
 import ws from 'ws';
 import EventEmitter from 'events';
-import { API_BLAZE, getString, IBlazeDoubleConnection } from '..';
+import { API_BLAZE, getString, IBlazeDoubleConnection, IMakeConnectionOptions } from '..';
 
-export function makeConnectionBlazeDoubles(): IBlazeDoubleConnection {
+export function makeConnectionBlazeDoubles({
+    needCloseWithCompletedSession = false
+}: IMakeConnectionOptions): IBlazeDoubleConnection {
     const ev = new EventEmitter();
     let completed = false
     const wss = new ws(API_BLAZE, {
@@ -34,7 +36,9 @@ export function makeConnectionBlazeDoubles(): IBlazeDoubleConnection {
         console.log('Closed')
         if (!completed) {
             console.log("Starting new WebSocket")
-            let v2 = makeConnectionBlazeDoubles()
+            let v2 = makeConnectionBlazeDoubles({
+                needCloseWithCompletedSession: needCloseWithCompletedSession
+            })
             v2.ev.on('roulette_waiting', (data) => {
                 ev.emit('roulette_waiting', data)
             })
@@ -47,7 +51,9 @@ export function makeConnectionBlazeDoubles(): IBlazeDoubleConnection {
             })
             if (!completed) {
                 console.log("Starting new WebSocket V2")
-                let v3 = makeConnectionBlazeDoubles()
+                let v3 = makeConnectionBlazeDoubles({
+                    needCloseWithCompletedSession: needCloseWithCompletedSession
+                })
                 v3.ev.on('roulette_waiting', (data) => {
                     ev.emit('roulette_waiting', data)
                 })
@@ -60,7 +66,9 @@ export function makeConnectionBlazeDoubles(): IBlazeDoubleConnection {
                 })
                 if (!completed) {
                     console.log("Starting new WebSocket V4")
-                    let v4 = makeConnectionBlazeDoubles()
+                    let v4 = makeConnectionBlazeDoubles({
+                        needCloseWithCompletedSession: needCloseWithCompletedSession
+                    })
                     v4.ev.on('roulette_waiting', (data) => {
                         ev.emit('roulette_waiting', data)
                     })
@@ -109,7 +117,7 @@ export function makeConnectionBlazeDoubles(): IBlazeDoubleConnection {
                     type: 'v1',
                     ...json
                 })
-                wss.close()
+                if (needCloseWithCompletedSession) wss.close()
             }
         } 
         else if (id == "double.tick") {
@@ -137,7 +145,7 @@ export function makeConnectionBlazeDoubles(): IBlazeDoubleConnection {
                     type: 'v2',
                     ...json
                 })
-                wss.close()
+                if (needCloseWithCompletedSession) wss.close()
             }
         }
     }

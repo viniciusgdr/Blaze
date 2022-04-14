@@ -1,8 +1,10 @@
 import ws from 'ws';
 import EventEmitter from 'events';
-import { API_BLAZE, getString, IBlazeCrashConnection } from '..';
+import { API_BLAZE, getString, IBlazeCrashConnection, IMakeConnectionOptions } from '..';
 
-export function makeConnectionBlazeCrash(): IBlazeCrashConnection {
+export function makeConnectionBlazeCrash({
+    needCloseWithCompletedSession = false
+}: IMakeConnectionOptions): IBlazeCrashConnection {
     const ev = new EventEmitter();
     let completed = false
     const wss = new ws(API_BLAZE, {
@@ -32,7 +34,9 @@ export function makeConnectionBlazeCrash(): IBlazeCrashConnection {
     function onClose(code: number, reason: Buffer) {
         if (!completed) {
             console.log("Starting new WebSocket")
-            let v2 = makeConnectionBlazeCrash()
+            let v2 = makeConnectionBlazeCrash({
+                needCloseWithCompletedSession: needCloseWithCompletedSession
+            })
             v2.ev.on('crash_waiting', (data) => {
                 ev.emit('crash_waiting', data)
             })
@@ -44,7 +48,9 @@ export function makeConnectionBlazeCrash(): IBlazeCrashConnection {
                 ev.emit('crash_complete', data)
             })
             if (!completed) {
-                let v3 = makeConnectionBlazeCrash()
+                let v3 = makeConnectionBlazeCrash({
+                    needCloseWithCompletedSession: needCloseWithCompletedSession
+                })
                 v3.ev.on('crash_waiting', (data) => {
                     ev.emit('crash_waiting', data)
                 })
@@ -56,7 +62,9 @@ export function makeConnectionBlazeCrash(): IBlazeCrashConnection {
                     ev.emit('crash_complete', data)
                 })
                 if (!completed) {
-                    let v4 = makeConnectionBlazeCrash()
+                    let v4 = makeConnectionBlazeCrash({
+                        needCloseWithCompletedSession: needCloseWithCompletedSession
+                    })
                     v4.ev.on('crash_waiting', (data) => {
                         ev.emit('crash_waiting', data)
                     })
@@ -105,7 +113,7 @@ export function makeConnectionBlazeCrash(): IBlazeCrashConnection {
                     type: 'v1',
                     ...json
                 })
-                wss.close()
+                if (needCloseWithCompletedSession) wss.close()
             }
         } 
         else if (id == "crash.tick") {
@@ -133,7 +141,7 @@ export function makeConnectionBlazeCrash(): IBlazeCrashConnection {
                     type: 'v2',
                     ...json
                 })
-                wss.close()
+                if (needCloseWithCompletedSession) wss.close()
             }
         }
     }
