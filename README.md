@@ -1,7 +1,7 @@
 
 # Blaze - TS/JS Blaze API
 A websocket connection for Blaze games
-![Blaze.png](https://raw.githubusercontent.com/viniciusgdr/Blaze/master/Media/blaze.png)
+<img src="/Media/blaze.png" alt="Blaze"/>
 
 ## Example
 You can check at [example-crash.ts](https://github.com/viniciusgdr/Blaze/blob/b2f9ddc4c3aea60d7a5c52134359e0a587bb4a4f/Example/example-crash.ts)
