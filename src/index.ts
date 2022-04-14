@@ -1,4 +1,5 @@
 export * from './Defaults';
-export * from './Socket';
+export * from './SocketCrash';
+export * from './SocketDouble';
 export * from './Types';
 export * from './Utils';
