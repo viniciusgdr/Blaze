@@ -65,6 +65,13 @@ const socket = makeConnectionBlazeCrash({
      needCloseWithCompletedSession: boolean
 })
 ```
+
+You can set the interval time between sends that the socket is alive in blaze
+```ts
+const socket = makeConnectionBlazeCrash({
+    timeoutSendingAliveSocket: 5000
+})
+```
 ## Licence
 
 [MIT](https://choosealicense.com/licenses/mit/)
