@@ -4,7 +4,8 @@ import { API_BLAZE, getString, IBlazeDoubleConnection, IMakeConnectionOptions } 
 
 export function makeConnectionBlazeDoubles({
     needCloseWithCompletedSession = false,
-    timeoutSendingAliveSocket =  5000
+    timeoutSendingAliveSocket =  5000,
+    token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ODQ1NzgwNiwiYmxvY2tzIjpbXSwiaWF0IjoxNjUwMDUwMjkwLCJleHAiOjE2NTUyMzQyOTB9.x5tzGNmryxckvvOMvnEwKsw0r1R4us7w6NZRSiv-MA0'
 }: IMakeConnectionOptions): IBlazeDoubleConnection {
     const ev = new EventEmitter();
     const wss = new ws(API_BLAZE, {
@@ -26,9 +27,9 @@ export function makeConnectionBlazeDoubles({
     function onOpen() {
         wss.send('423["cmd",{"id":"subscribe","payload":{"room":"double"}}]')
         wss.send('423["cmd",{"id":"subscribe","payload":{"room":"double_v2"}}]')
-        wss.send('423["cmd",{"id":"authenticate","payload":{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTM2NzE2NCwiYmxvY2tzIjpbXSwiaWF0IjoxNjQ2MTg3NTE5LCJleHAiOjE2NTEzNzE1MTl9.DG3sZ8AS7adC1uMlLrlbIKJah9wJj5cFGbJxpaJ2eZ0"}}]')
-        wss.send('422["cmd",{"id":"authenticate","payload":{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTM2NzE2NCwiYmxvY2tzIjpbXSwiaWF0IjoxNjQ2MTg3NTE5LCJleHAiOjE2NTEzNzE1MTl9.DG3sZ8AS7adC1uMlLrlbIKJah9wJj5cFGbJxpaJ2eZ0"}}]')
-        wss.send('420["cmd",{"id":"authenticate","payload":{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTM2NzE2NCwiYmxvY2tzIjpbXSwiaWF0IjoxNjQ2MTg3NTE5LCJleHAiOjE2NTEzNzE1MTl9.DG3sZ8AS7adC1uMlLrlbIKJah9wJj5cFGbJxpaJ2eZ0"}}]')
+        wss.send(`423["cmd",{"id":"authenticate","payload":{"token":"${token}"}}]`)
+        wss.send(`422["cmd",{"id":"authenticate","payload":{"token":"${token}"}}]`)
+        wss.send(`420["cmd",{"id":"authenticate","payload":{"token":"${token}"}}]`)
         ev.emit('authenticated', {
             success: true,
             subscribe: ["double", "double_v2"]

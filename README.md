@@ -69,7 +69,14 @@ const socket = makeConnectionBlazeCrash({
 You can set the interval time between sends that the socket is alive in blaze
 ```ts
 const socket = makeConnectionBlazeCrash({
-    timeoutSendingAliveSocket: 5000
+    timeoutSendingAliveSocket: number
+})
+```
+
+You can set the your token of blaze
+```ts
+const socket = makeConnectionBlazeCrash({
+    token: string
 })
 ```
 ## Licence
