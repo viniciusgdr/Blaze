@@ -6,7 +6,6 @@ export function makeConnectionBlazeCrash({
     needCloseWithCompletedSession = false
 }: IMakeConnectionOptions): IBlazeCrashConnection {
     const ev = new EventEmitter();
-    let completed = false
     const wss = new ws(API_BLAZE, {
         origin: 'https://blaze.com',
         headers: {
@@ -20,6 +19,9 @@ export function makeConnectionBlazeCrash({
     wss.on('message', onMessageReceived)
     wss.on('close', onClose)
 
+    let interval = setInterval(() => {
+        wss.send('2')
+    }, 5000)
     function onOpen() {
         wss.send('423["cmd",{"id":"subscribe","payload":{"room":"crash"}}]')
         wss.send('423["cmd",{"id":"subscribe","payload":{"room":"crash_v2"}}]')
@@ -32,52 +34,11 @@ export function makeConnectionBlazeCrash({
         })
     }
     function onClose(code: number, reason: Buffer) {
-        if (!completed) {
-            console.log("Starting new WebSocket")
-            let v2 = makeConnectionBlazeCrash({
-                needCloseWithCompletedSession: needCloseWithCompletedSession
-            })
-            v2.ev.on('crash_waiting', (data) => {
-                ev.emit('crash_waiting', data)
-            })
-            v2.ev.on('crash_graphing', (data) => {
-                ev.emit('crash_graphing', data)
-            })
-            v2.ev.on('crash_complete', (data) => {
-                completed = true
-                ev.emit('crash_complete', data)
-            })
-            if (!completed) {
-                let v3 = makeConnectionBlazeCrash({
-                    needCloseWithCompletedSession: needCloseWithCompletedSession
-                })
-                v3.ev.on('crash_waiting', (data) => {
-                    ev.emit('crash_waiting', data)
-                })
-                v3.ev.on('crash_graphing', (data) => {
-                    ev.emit('crash_graphing', data)
-                })
-                v3.ev.on('crash_complete', (data) => {
-                    completed = true
-                    ev.emit('crash_complete', data)
-                })
-                if (!completed) {
-                    let v4 = makeConnectionBlazeCrash({
-                        needCloseWithCompletedSession: needCloseWithCompletedSession
-                    })
-                    v4.ev.on('crash_waiting', (data) => {
-                        ev.emit('crash_waiting', data)
-                    })
-                    v4.ev.on('crash_graphing', (data) => {
-                        ev.emit('crash_graphing', data)
-                    })
-                    v4.ev.on('crash_complete', (data) => {
-                        completed = true
-                        ev.emit('crash_complete', data)
-                    })
-                }
-            }
-        }
+        ev.emit('close', {
+            code, 
+            reason: reason.toString()
+        })
+        clearInterval(interval)
         wss.close()
     }
     function onMessageReceived(data: ws.RawData) {
@@ -108,12 +69,14 @@ export function makeConnectionBlazeCrash({
                 })
             }
             else if (json.status == 'complete') {
-                completed = true
                 ev.emit('crash_complete', {
                     type: 'v1',
                     ...json
                 })
-                if (needCloseWithCompletedSession) wss.close()
+                if (needCloseWithCompletedSession) {
+                    clearInterval(interval)
+                    wss.close()
+                }
             }
         } 
         else if (id == "crash.tick") {
@@ -136,18 +99,21 @@ export function makeConnectionBlazeCrash({
                     })
                 }
             } else {
-                completed = true
                 ev.emit('crash_complete', {
                     type: 'v2',
                     ...json
                 })
-                if (needCloseWithCompletedSession) wss.close()
+                if (needCloseWithCompletedSession) {
+                    clearInterval(interval)
+                    wss.close()
+                }
             }
         }
     }
     return {
         ev: ev,
         closeSocket: () => {
+            clearInterval(interval)
             wss.close()
         },
         sendToSocket: (data: any) => {

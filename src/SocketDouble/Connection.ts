@@ -6,7 +6,6 @@ export function makeConnectionBlazeDoubles({
     needCloseWithCompletedSession = false
 }: IMakeConnectionOptions): IBlazeDoubleConnection {
     const ev = new EventEmitter();
-    let completed = false
     const wss = new ws(API_BLAZE, {
         origin: 'https://blaze.com',
         headers: {
@@ -20,6 +19,9 @@ export function makeConnectionBlazeDoubles({
     wss.on('message', onMessageReceived)
     wss.on('close', onClose)
 
+    let interval = setInterval(() => {
+        wss.send('2')
+    }, 5000)
     function onOpen() {
         wss.send('423["cmd",{"id":"subscribe","payload":{"room":"double"}}]')
         wss.send('423["cmd",{"id":"subscribe","payload":{"room":"double_v2"}}]')
@@ -32,56 +34,11 @@ export function makeConnectionBlazeDoubles({
         })
     }
     function onClose(code: number, reason: Buffer) {
-        console.log(code, reason.toString())
-        console.log('Closed')
-        if (!completed) {
-            console.log("Starting new WebSocket")
-            let v2 = makeConnectionBlazeDoubles({
-                needCloseWithCompletedSession: needCloseWithCompletedSession
-            })
-            v2.ev.on('roulette_waiting', (data) => {
-                ev.emit('roulette_waiting', data)
-            })
-            v2.ev.on('roulette_rolling', (data) => {
-                ev.emit('roulette_rolling', data)
-            })
-            v2.ev.on('roulette_complete', (data) => {
-                completed = true
-                ev.emit('roulette_complete', data)
-            })
-            if (!completed) {
-                console.log("Starting new WebSocket V2")
-                let v3 = makeConnectionBlazeDoubles({
-                    needCloseWithCompletedSession: needCloseWithCompletedSession
-                })
-                v3.ev.on('roulette_waiting', (data) => {
-                    ev.emit('roulette_waiting', data)
-                })
-                v3.ev.on('roulette_rolling', (data) => {
-                    ev.emit('roulette_rolling', data)
-                })
-                v3.ev.on('roulette_complete', (data) => {
-                    completed = true
-                    ev.emit('roulette_complete', data)
-                })
-                if (!completed) {
-                    console.log("Starting new WebSocket V4")
-                    let v4 = makeConnectionBlazeDoubles({
-                        needCloseWithCompletedSession: needCloseWithCompletedSession
-                    })
-                    v4.ev.on('roulette_waiting', (data) => {
-                        ev.emit('roulette_waiting', data)
-                    })
-                    v4.ev.on('roulette_rolling', (data) => {
-                        ev.emit('roulette_rolling', data)
-                    })
-                    v4.ev.on('roulette_complete', (data) => {
-                        completed = true
-                        ev.emit('roulette_complete', data)
-                    })
-                }
-            }
-        }
+        ev.emit('close', {
+            code,
+            reason: reason.toString()
+        })
+        clearInterval(interval)
         wss.close()
     }
     function onMessageReceived(data: ws.RawData) {
@@ -112,12 +69,14 @@ export function makeConnectionBlazeDoubles({
                 })
             }
             else if (json.status == 'complete') {
-                completed = true
                 ev.emit('roulette_complete', {
                     type: 'v1',
                     ...json
                 })
-                if (needCloseWithCompletedSession) wss.close()
+                if (needCloseWithCompletedSession) {
+                    clearInterval(interval)
+                    wss.close()
+                }
             }
         } 
         else if (id == "double.tick") {
@@ -140,12 +99,14 @@ export function makeConnectionBlazeDoubles({
                     })
                 }
             } else {
-                completed = true
                 ev.emit('roulette_complete', {
                     type: 'v2',
                     ...json
                 })
-                if (needCloseWithCompletedSession) wss.close()
+                if (needCloseWithCompletedSession) {
+                    clearInterval(interval)
+                    wss.close()
+                }
             }
         }
     }

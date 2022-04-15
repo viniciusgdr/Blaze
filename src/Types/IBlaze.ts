@@ -6,6 +6,10 @@ export declare type BlazeCrashEventMap = {
         success: boolean;
         subscribe: string[]
     }
+    'close': {
+        code: number;
+        reason: string;
+    }
     /* 
      *   Message Players
      */
@@ -28,6 +32,10 @@ export declare type BlazeDoubleEventMap = {
     'authenticated': {
         success: boolean;
         subscribe: string[]
+    }
+    'close': {
+        code: number;
+        reason: string;
     }
     /* 
      *   Message Players
