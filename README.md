@@ -28,6 +28,8 @@ Or use the edge version
 Crash:
 ```ts
 'authenticated': { success: boolean; subscribe: string[] }
+'close': { code: number; reason: string; }
+
 'crash.bet': any;
 'crash.tick': CrashUpdateV2
 
@@ -39,6 +41,8 @@ Crash:
 Doubles:
 ```ts
 'authenticated': { success: boolean; subscribe: string[] }
+'close': { code: number; reason: string; }
+
 'doubles.bet': any;
 "double.tick": DoubleUpdateV2
 
