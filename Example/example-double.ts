@@ -1,7 +1,9 @@
-import { makeConnectionBlazeDoubles } from ".."
+import { makeConnectionBlazeDoubles } from "../src"
 
 let socket = makeConnectionBlazeDoubles({
-    needCloseWithCompletedSession: true
+    // optional params
+    needCloseWithCompletedSession: true,
+    timeoutSendingAliveSocket: 5000
 })
 socket.ev.on('roulette_complete', msg => {
     console.log(msg)

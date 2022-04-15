@@ -1,7 +1,9 @@
-import { makeConnectionBlazeCrash } from ".."
+import { makeConnectionBlazeCrash } from "../src"
 
 let socket = makeConnectionBlazeCrash({
-    needCloseWithCompletedSession: true
+    // optional params
+    needCloseWithCompletedSession: true,
+    timeoutSendingAliveSocket: 5000
 })
 socket.ev.on('crash_complete', msg => {
     console.log(msg)

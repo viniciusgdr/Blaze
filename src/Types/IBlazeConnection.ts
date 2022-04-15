@@ -13,5 +13,6 @@ export interface IBlazeDoubleConnection {
 }
 
 export interface IMakeConnectionOptions {
-    needCloseWithCompletedSession?: boolean
+    needCloseWithCompletedSession?: boolean;
+    timeoutSendingAliveSocket?: number;
 }

@@ -3,7 +3,8 @@ import EventEmitter from 'events';
 import { API_BLAZE, getString, IBlazeCrashConnection, IMakeConnectionOptions } from '..';
 
 export function makeConnectionBlazeCrash({
-    needCloseWithCompletedSession = false
+    needCloseWithCompletedSession = false,
+    timeoutSendingAliveSocket =  5000
 }: IMakeConnectionOptions): IBlazeCrashConnection {
     const ev = new EventEmitter();
     const wss = new ws(API_BLAZE, {
@@ -21,7 +22,7 @@ export function makeConnectionBlazeCrash({
 
     let interval = setInterval(() => {
         wss.send('2')
-    }, 5000)
+    }, timeoutSendingAliveSocket)
     function onOpen() {
         wss.send('423["cmd",{"id":"subscribe","payload":{"room":"crash"}}]')
         wss.send('423["cmd",{"id":"subscribe","payload":{"room":"crash_v2"}}]')
