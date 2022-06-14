@@ -1,0 +1,35 @@
+{
+  "name": "@viniciusgdr/blaze",
+  "version": "1.1.0",
+  "description": "A API Blaze for Game Crash",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "tsc",
+    "build:tsc": "tsc",
+    "example": "ts-node Example/example-crash.ts",
+    "example:double": "ts-node Example/example-double.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viniciusgdr/blaze.git"
+  },
+  "keywords": [
+    "blaze",
+    "crash",
+    "websocket"
+  ],
+  "author": "viniciusgdr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/viniciusgdr/blaze/issues"
+  },
+  "homepage": "https://github.com/viniciusgdr/blaze#readme",
+  "dependencies": {
+    "ws": "^8.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.23",
+    "@types/ws": "^8.5.3"
+  }
+}
