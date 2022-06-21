@@ -13,12 +13,15 @@ export function makeConnectionBlaze({
 }: IMakeConnectionOptions): IBlazeConnection {
     const ev = new EventEmitter();
     const wss = new ws(API_BLAZE, {
+        host: 'api-v2.blaze.com',
         origin: 'https://blaze.com',
         headers: {
-            'Accept-Encoding': 'gzip, deflate, br',
+            'Upgrade': 'websocket',
+            'Sec-Webscoket-Extensions': 'permessage-defalte; client_max_window_bits',
             'Pragma': 'no-cache',
-            'Sec-WebSocket-Extensions': 'permessage-deflate; client_max_window_bits',
-            'Upgrade': 'websocket'
+            'Connection': 'Upgrade',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'
         }
     });
     let interval = setInterval(() => {
