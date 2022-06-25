@@ -23,4 +23,11 @@ export interface DoubleUpdateV2 {
     "updated_at": Date;
     "status": statusdoubles;
     "bets": IBet[];
+
+    "total_red_eur_bet": number | null;
+    "total_red_bets_placed": number | null;
+    "total_white_eur_bet": number | null;
+    "total_white_bets_placed": number | null;
+    "total_black_eur_bet": number | null;
+    "total_black_bets_placed": number | null;
 }
