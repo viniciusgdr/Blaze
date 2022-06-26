@@ -83,7 +83,7 @@ export function onMessage(
             type: 'v2',
             ...json
         })
-        if (json.crash_point == null) {
+        if (json["crash_point"] == null || json["color"] == null) {
             if (json.status == 'graphing' || json.status == "rolling") {
                 if ((requireNotRepeated && !temp.isGraphingBefore) || !requireNotRepeated) ev.emit('game_graphing', {
                     type: 'v2',
