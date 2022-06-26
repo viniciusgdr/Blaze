@@ -47,7 +47,7 @@ socket.ev.on('game_complete', (msg) => {
 })
 ```
 ## Notes
-You can end the connection when the action is complete:
+This option declared as "true" closes the socket when the match ends
 ```ts
 const socket = makeConnectionBlaze({
     needCloseWithCompletedSession: boolean
@@ -68,7 +68,7 @@ const socket = makeConnectionBlaze({
 })
 ```
 
-You can enable event repeat mode
+This option declared as "true" limits you from repeating the same event several times in the round. so sending only once.
 ```ts
 const socket = makeConnectionBlaze({
     requireNotRepeated: false
