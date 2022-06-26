@@ -41,30 +41,32 @@ export function onMessage(
     if (id == "crash.tick" || id == "double.tick" || id == 'crash.update' || id == 'doubles.update') {
         let obj = msg.slice(2, msg.length)
         let { payload: json } = JSON.parse(obj)[1]
+        let type = id.includes('update') ? 'v1' : 'v2'
+        let game = id.includes('crash') ? 'crash' : 'doubles'
         ev.emit(id, {
-            type: id.includes('update') ? 'v1' : 'v2',
+            type,
             ...json
         })
         if (json.status == 'graphing' || json.status == "rolling") {
             if ((requireNotRepeated && !temp.isGraphingBefore) || !requireNotRepeated) ev.emit('game_graphing', {
-                type: id.includes('update') ? 'v1' : 'v2',
-                game: id.includes('crash') ? 'crash' : 'doubles',
+                type,
+                game,
                 isRepeated: temp.isGraphingBefore,
                 ...json
             })
             if (!temp.isGraphingBefore) updateTemp('graphing')
         } else if (json.status == 'waiting') {
             if ((requireNotRepeated && !temp.isWaitingBefore) || !requireNotRepeated) ev.emit('game_waiting', {
-                type: id.includes('update') ? 'v1' : 'v2',
-                game: id.includes('crash') ? 'crash' : 'doubles',
+                type,
+                game,
                 isRepeated: temp.isWaitingBefore,
                 ...json
             })
             if (!temp.isWaitingBefore) updateTemp('waiting')
         } else {
             if ((requireNotRepeated && !temp.isCompleteBefore) || !requireNotRepeated) ev.emit('game_complete', {
-                type: id.includes('update') ? 'v1' : 'v2',
-                game: id.includes('crash') ? 'crash' : 'doubles',
+                type,
+                game,
                 isRepeated: temp.isCompleteBefore,
                 ...json
             })
