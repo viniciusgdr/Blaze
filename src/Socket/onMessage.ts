@@ -83,24 +83,22 @@ export function onMessage(
             type: 'v2',
             ...json
         })
-        if (json["crash_point"] == null || json["color"] == null) {
-            if (json.status == 'graphing' || json.status == "rolling") {
-                if ((requireNotRepeated && !temp.isGraphingBefore) || !requireNotRepeated) ev.emit('game_graphing', {
-                    type: 'v2',
-                    game: id.includes('crash') ? 'crash' : 'doubles',
-                    isRepeated: temp.isGraphingBefore,
-                    ...json
-                })
-                if (!temp.isGraphingBefore) updateTemp('graphing')
-            } else {
-                if ((requireNotRepeated && !temp.isWaitingBefore) || !requireNotRepeated) ev.emit('game_waiting', {
-                    type: 'v2',
-                    game: id.includes('crash') ? 'crash' : 'doubles',
-                    isRepeated: temp.isWaitingBefore,
-                    ...json
-                })
-                if (!temp.isWaitingBefore) updateTemp('waiting')
-            }
+        if (json.status == 'graphing' || json.status == "rolling") {
+            if ((requireNotRepeated && !temp.isGraphingBefore) || !requireNotRepeated) ev.emit('game_graphing', {
+                type: 'v2',
+                game: id.includes('crash') ? 'crash' : 'doubles',
+                isRepeated: temp.isGraphingBefore,
+                ...json
+            })
+            if (!temp.isGraphingBefore) updateTemp('graphing')
+        } else if (json.status == 'waiting') {
+            if ((requireNotRepeated && !temp.isWaitingBefore) || !requireNotRepeated) ev.emit('game_waiting', {
+                type: 'v2',
+                game: id.includes('crash') ? 'crash' : 'doubles',
+                isRepeated: temp.isWaitingBefore,
+                ...json
+            })
+            if (!temp.isWaitingBefore) updateTemp('waiting')
         } else {
             if ((requireNotRepeated && !temp.isCompleteBefore) || !requireNotRepeated) ev.emit('game_complete', {
                 type: 'v2',
