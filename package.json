@@ -1,6 +1,6 @@
 {
   "name": "@viniciusgdr/blaze",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "A API Blaze for Game Crash",
   "main": "lib/index.js",
   "scripts": {
@@ -31,7 +31,8 @@
     "ws": "^8.8.0"
   },
   "devDependencies": {
-    "@types/node": "^17.0.23",
-    "@types/ws": "^8.5.3"
+    "@types/node": "^17.0.45",
+    "@types/ws": "^8.5.3",
+    "events": "^3.3.0"
   }
 }
