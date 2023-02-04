@@ -12,4 +12,5 @@ export interface IMakeConnectionOptions {
     token?: string;
     requireNotRepeated?: boolean;
     type: 'crash' | 'doubles';
+    reconnectCrash?: boolean;
 }

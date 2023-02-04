@@ -1,13 +1,12 @@
 {
   "name": "@viniciusgdr/blaze",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "description": "A API Blaze for Game Crash",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "example": "ts-node Example/example-crash.ts",
-    "example:double": "ts-node Example/example-double.ts",
+    "example": "ts-node Example/example.ts",
     "postinstall": "npm run build",
     "tsc": "./node_modules/typescript/bin/tsc"
   },
