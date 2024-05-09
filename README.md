@@ -1,17 +1,7 @@
 
 # Blaze - TS/JS Blaze API
 A websocket connection for Blaze games
-<img src="/Media/blaze.png" alt="Blaze"/>
-
-## Example
-You can check at [example.ts](https://github.com/viniciusgdr/Blaze/blob/master/Example/example.ts)
-an event receiving usage model
-
-To run the example, download or clone the repo and then type the following in terminal:
-1. ``` cd path/Blaze ```
-2. ``` npm i ```
-3. ``` npm run example ``` 
-
+<img src="/media/blaze.png" alt="Blaze"/>
 
 ## Install
 
@@ -26,15 +16,15 @@ Or use the edge version
     
 ## Handling Events
 ```ts
-'authenticated': { success: boolean; subscribe: string[] }
-'close': { code: number; reason: string; }
+'close': { code: number; reconnect: boolean; }
 
-'crash.tick': CrashUpdate | CrashUpdateV2;
-'double.tick': DoubleUpdate | DoubleUpdateV2;
+'crash.tick'
+'double.tick'
+'subscriptions': string[]
 
-'crash_waiting': CrashUpdate | CrashUpdateV2 | DoubleUpdate | DoubleUpdateV2;
-'crash_graphing': CrashUpdate | CrashUpdateV2 | DoubleUpdate | DoubleUpdateV2;
-'crash_complete': CrashUpdate | CrashUpdateV2 | DoubleUpdate | DoubleUpdateV2;
+// On enabled cacheIgnoreRepeatedEvents, the event will be sent only once. If you want to receive the event repeatedly, you can use: (or disable the cacheIgnoreRepeatedEvents)
+'CB:crash.tick'
+'CB:double.tick'
 ```
 
 Example:
@@ -47,20 +37,6 @@ socket.ev.on('game_complete', (msg) => {
 })
 ```
 ## Notes
-This option declared as "true" closes the socket when the match ends
-```ts
-const socket = makeConnectionBlaze({
-    needCloseWithCompletedSession: boolean
-})
-```
-
-You can set the interval time between sends that the socket is alive in blaze
-```ts
-const socket = makeConnectionBlaze({
-    timeoutSendingAliveSocket: number
-})
-```
-
 You can set the your token of blaze (Optional)
 ```ts
 const socket = makeConnectionBlaze({
@@ -71,7 +47,7 @@ const socket = makeConnectionBlaze({
 This option declared as "true" limits you from repeating the same event several times in the round. so sending only once.
 ```ts
 const socket = makeConnectionBlaze({
-    requireNotRepeated: false
+    cacheIgnoreRepeatedEvents: false
     // the default is true
 })
 ```
