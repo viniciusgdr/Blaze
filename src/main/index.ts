@@ -58,14 +58,3 @@ export const makeConnection = async ({
       throw new Error('Missing web')
   }
 }
-
-void (async () => {
-  console.log('Starting...')
-  const socket = await makeConnection({
-    web: 'blaze',
-    type: 'crash',
-  })
-  socket.on('crash.tick', (data) => {
-    console.log(data)
-  })
-}) ();
