@@ -10,7 +10,7 @@ export declare interface BlazeEventMap {
   // Only on crash_2
   'crash.tick-bets': {
     id: string
-    roomId: number;
+    roomId: number
     total_eur_bet: number
     total_bets_placed: string
     total_eur_won: number
@@ -20,15 +20,15 @@ export declare interface BlazeEventMap {
     id: string
     color: string | null
     roll: string | null
-    created_at: string;
-    updated_at: string;
+    created_at: string
+    updated_at: string
     status: 'rolling' | 'waiting' | 'complete'
-    total_red_eur_bet: number;
-    total_red_bets_placed: number;
-    total_white_eur_bet: number;
-    total_white_bets_placed: number;
-    total_black_eur_bet: number;
-    total_black_bets_placed: number;
+    total_red_eur_bet: number
+    total_red_bets_placed: number
+    total_white_eur_bet: number
+    total_white_bets_placed: number
+    total_black_eur_bet: number
+    total_black_bets_placed: number
     bets: Bet[]
   }
   'close': {
@@ -39,16 +39,16 @@ export declare interface BlazeEventMap {
 }
 
 export interface Bet {
-  id: string,
-  cashed_out_at: number | null,
-  amount: number,
-  currency_type: string,
+  id: string
+  cashed_out_at: number | null
+  amount: number
+  currency_type: string
   user: {
-      id: string,
-      id_str: string,
-      username: string,
-      rank: string
-  },
-  win_amount: string,
+    id: string
+    id_str: string
+    username: string
+    rank: string
+  }
+  win_amount: string
   status: 'win' | 'created'
 }

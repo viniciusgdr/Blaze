@@ -7,7 +7,7 @@ export class BlazeSocket implements Socket<BlazeEventMap> {
   interval: NodeJS.Timeout | null = null
   private readonly ev: EventEmitter = new EventEmitter()
   private cache: Record<string, any> | null = null
-  constructor(
+  constructor (
     private readonly socket: ConnectionSocket,
     cacheIgnoreRepeatedEvents: boolean = true
   ) {
@@ -16,7 +16,7 @@ export class BlazeSocket implements Socket<BlazeEventMap> {
     }
   }
 
-  async connect(options: Socket.Options): Promise<void> {
+  async connect (options: Socket.Options): Promise<void> {
     await this.socket.connect(options)
     this.initPing(options.timeoutPing ?? 10000)
     this.initOpen(options.type ?? 'crash', options.token)
@@ -24,28 +24,28 @@ export class BlazeSocket implements Socket<BlazeEventMap> {
     this.initClose(options)
   }
 
-  private initPing(timeoutPing: number): void {
+  private initPing (timeoutPing: number): void {
     this.interval = setInterval(() => {
       this.socket.send('2')
     }, timeoutPing)
   }
 
-  private onMessage(): void {
+  private onMessage (): void {
     this.socket.on('message', (data: any) => {
       const msg: string = data.toString()
-      const regex = /^\d+\["data",\s*({.*})]$/;
+      const regex = /^\d+\["data",\s*({.*})]$/
 
       const match = msg.match(regex)
       if (!match) {
         return
       }
 
-      const { payload, id } = JSON.parse(match[1]) ?? {};
+      const { payload, id } = JSON.parse(match[1]) ?? {}
       if (!payload || !id || !payload.id || !payload.status) {
         return
       }
       if (this.cache !== null) {
-        void this.ev.emit('CB:' + id, payload)
+        void this.ev.emit(`CB:${id as string}`, payload)
 
         const cache = this.cache[payload.id]
         console.log(cache, payload.id, payload.status)
@@ -61,7 +61,7 @@ export class BlazeSocket implements Socket<BlazeEventMap> {
     })
   }
 
-  private initClose(options: Socket.Options): void {
+  private initClose (options: Socket.Options): void {
     this.socket.on('close', async (code: number) => {
       if (this.interval) {
         clearInterval(this.interval)
@@ -78,7 +78,7 @@ export class BlazeSocket implements Socket<BlazeEventMap> {
     })
   }
 
-  private initOpen(type: string, token?: string): void {
+  private initOpen (type: string, token?: string): void {
     this.socket.on('open', () => {
       const subscriptions = []
       if (type === 'crash') {
@@ -108,15 +108,15 @@ export class BlazeSocket implements Socket<BlazeEventMap> {
     this.ev.on(event, callback)
   }
 
-  emit(event: string, data: any): void {
+  emit (event: string, data: any): void {
     this.socket.emit(event, data)
   }
 
-  async disconnect(): Promise<void> {
+  async disconnect (): Promise<void> {
     await this.socket.disconnect()
   }
 
-  async send(data: any): Promise<void> {
+  async send (data: any): Promise<void> {
     this.socket.send(data)
   }
 }

@@ -15,7 +15,7 @@
   "author": "viniciusgdr",
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^29.5.3",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20.4.4",
     "@types/node-fetch": "^2.6.4",
     "@types/ws": "^8.5.10",
