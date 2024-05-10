@@ -29,24 +29,24 @@ Or use the edge version
 
 Example:
 ```ts
-const socket = makeConnectionBlaze({
-    type: 'crash', // or 'doubles'
+const socket = makeConnection({
+    type: 'crash', // "crash" | "doubles" | "crash_2"
 })
-socket.ev.on('game_complete', (msg) => {
+socket.ev.on('crash.tick', (msg) => {
     console.log(msg)
 })
 ```
 ## Notes
 You can set the your token of blaze (Optional)
 ```ts
-const socket = makeConnectionBlaze({
+const socket = makeConnection({
     token: string
 })
 ```
 
 This option declared as "true" limits you from repeating the same event several times in the round. so sending only once.
 ```ts
-const socket = makeConnectionBlaze({
+const socket = makeConnection({
     cacheIgnoreRepeatedEvents: false
     // the default is true
 })
