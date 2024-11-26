@@ -44,11 +44,11 @@ export class BlazeSocket implements Socket<BlazeEventMap> {
       if (!payload || !id || !payload.id || !payload.status) {
         return
       }
+      console.log(id)
       if (this.cache !== null) {
         void this.ev.emit(`CB:${id as string}`, payload)
 
         const cache = this.cache[payload.id]
-        console.log(cache, payload.id, payload.status)
         if ((cache && cache !== payload.status) || !cache) {
           void this.ev.emit(id, payload)
           this.cache[payload.id] = payload.status
@@ -82,18 +82,18 @@ export class BlazeSocket implements Socket<BlazeEventMap> {
     this.socket.on('open', () => {
       const subscriptions = []
       if (type === 'crash') {
-        this.socket.send('420["cmd",{"id":"subscribe","payload":{"room":"crash_v2"}}]')
+        this.socket.send('420["cmd",{"id":"subscribe","payload":{"room":"crash_room_4"}}]')
         subscriptions.push('crash_v2')
       } else if (type === 'doubles') {
-        this.socket.send('423["cmd",{"id":"subscribe","payload":{"room":"double_v2"}}]')
+        this.socket.send('420["cmd",{"id":"subscribe","payload":{"room":"double_room_1"}}]')
         subscriptions.push('double_v2')
       } else if (type === 'crash_2') {
-        this.socket.send('423["cmd",{"id":"subscribe","payload":{"room":"crash_room_1"}}]')
+        this.socket.send('420["cmd",{"id":"subscribe","payload":{"room":"crash_room_1"}}]')
         subscriptions.push('crash_room_1')
       } else {
         throw new Error('Missing type of socket')
       }
-      this.socket.send('421["cmd",{"id":"subscribe","payload":{"room":"chat_room_2"}}]')
+      this.socket.send('420["cmd",{"id":"subscribe","payload":{"room":"chat_room_2"}}]')
       subscriptions.push('chat_room_2')
       if (token) {
         this.socket.send(`423["cmd",{"id":"authenticate","payload":{"token":"${token}"}}]`)
