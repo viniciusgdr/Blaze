@@ -3,23 +3,17 @@ import { type ConnectionSocket } from '../../domain/usecases/connectionSocket'
 import { type Socket } from '../../domain/usecases/socket'
 import { type BlazeEventMap } from '../interfaces/blaze'
 
-export class BlazeSocket implements Socket<BlazeEventMap> {
+export class BlazeMessageSocket implements Socket<BlazeEventMap> {
   interval: NodeJS.Timeout | null = null
   private readonly ev: EventEmitter = new EventEmitter()
-  private cache: Record<string, any> | null = null
   constructor (
-    private readonly socket: ConnectionSocket,
-    cacheIgnoreRepeatedEvents: boolean = true
-  ) {
-    if (cacheIgnoreRepeatedEvents) {
-      this.cache = {}
-    }
-  }
+    private readonly socket: ConnectionSocket
+  ) {}
 
   async connect (options: Socket.Options): Promise<void> {
     await this.socket.connect(options)
     this.initPing(options.timeoutPing ?? 10000)
-    this.initOpen(options.type ?? 'crash', options.token)
+    this.initOpen(options.token)
     this.onMessage()
     this.initClose(options)
   }
@@ -41,19 +35,7 @@ export class BlazeSocket implements Socket<BlazeEventMap> {
       }
 
       const { payload, id } = JSON.parse(match[1]) ?? {}
-      if (!payload || !id || !payload.id || !payload.status) {
-        return
-      }
-      if (this.cache !== null) {
-        void this.ev.emit(`CB:${id as string}`, payload)
-
-        const cache = this.cache[payload.id]
-        if ((cache && cache !== payload.status) || !cache) {
-          void this.ev.emit(id, payload)
-          this.cache[payload.id] = payload.status
-          return
-        }
-        this.cache[payload.id] = payload.status
+      if (!payload || !id) {
         return
       }
       void this.ev.emit(id, payload)
@@ -77,26 +59,11 @@ export class BlazeSocket implements Socket<BlazeEventMap> {
     })
   }
 
-  private initOpen (type: string, token?: string): void {
+  private initOpen (token?: string): void {
     this.socket.on('open', () => {
       const subscriptions = []
-      if (type === 'crash') {
-        this.socket.send('420["cmd",{"id":"subscribe","payload":{"room":"crash_room_4"}}]')
-        subscriptions.push('crash_v2')
-      } else if (type === 'doubles') {
-        this.socket.send('420["cmd",{"id":"subscribe","payload":{"room":"double_room_1"}}]')
-        subscriptions.push('double_v2')
-      } else if (type === 'crash_2') {
-        this.socket.send('420["cmd",{"id":"subscribe","payload":{"room":"crash_room_1"}}]')
-        subscriptions.push('crash_room_1')
-      } else {
-        throw new Error('Missing type of socket')
-      }
-      if (token) {
-        this.socket.send(`423["cmd",{"id":"authenticate","payload":{"token":"${token}"}}]`)
-        this.socket.send(`422["cmd",{"id":"authenticate","payload":{"token":"${token}"}}]`)
-        this.socket.send(`420["cmd",{"id":"authenticate","payload":{"token":"${token}"}}]`)
-      }
+      this.socket.send('420["cmd",{"id":"subscribe","payload":{"room":"chat_room_2"}}]')
+      subscriptions.push('chat_room_2')
       void this.ev.emit('subscriptions', subscriptions)
     })
   }

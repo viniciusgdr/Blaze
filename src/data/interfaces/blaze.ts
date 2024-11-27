@@ -31,6 +31,19 @@ export declare interface BlazeEventMap {
     total_black_bets_placed: number
     bets: Bet[]
   }
+  'chat.message': {
+    id: string
+    text: string
+    available: boolean
+    created_at: string
+    user: {
+      id: string
+      username: string
+      rank: string
+      label: string | null
+      level: number
+    }
+  }
   'close': {
     code: number
     reconnect: boolean
