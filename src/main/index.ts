@@ -7,7 +7,7 @@ import { getBlazeUrl } from '../infra/blaze/blaze-url'
 
 export interface ConnectionBlaze {
   web: 'blaze' | 'blaze-chat'
-  type: 'crash' | 'doubles' | 'crash_2'
+  type: 'crash' | 'doubles' | 'crash_2' | 'crash_neymarjr'
 }
 export type Connection = {
   url?: string

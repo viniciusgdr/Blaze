@@ -80,18 +80,20 @@ export class BlazeSocket implements Socket<BlazeEventMap> {
   private initOpen (type: string, token?: string): void {
     this.socket.on('open', () => {
       const subscriptions = []
-      if (type === 'crash') {
-        this.socket.send('420["cmd",{"id":"subscribe","payload":{"room":"crash_room_4"}}]')
-        subscriptions.push('crash_v2')
-      } else if (type === 'doubles') {
-        this.socket.send('420["cmd",{"id":"subscribe","payload":{"room":"double_room_1"}}]')
-        subscriptions.push('double_v2')
-      } else if (type === 'crash_2') {
-        this.socket.send('420["cmd",{"id":"subscribe","payload":{"room":"crash_room_1"}}]')
-        subscriptions.push('crash_room_1')
-      } else {
+      const roomMap: Record<string, string> = {
+        crash: 'crash_room_4',
+        doubles: 'double_room_1',
+        crash_2: 'crash_room_1',
+        crash_neymarjr: 'crash_room_3'
+      }
+
+      const room = roomMap[type]
+      if (!room) {
         throw new Error('Missing type of socket')
       }
+
+      this.socket.send(`420["cmd",{"id":"subscribe","payload":{"room":"${room}"}}]`)
+      subscriptions.push(room)
       if (token) {
         this.socket.send(`423["cmd",{"id":"authenticate","payload":{"token":"${token}"}}]`)
         this.socket.send(`422["cmd",{"id":"authenticate","payload":{"token":"${token}"}}]`)
