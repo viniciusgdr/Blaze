@@ -21,7 +21,7 @@
     "@types/node-fetch": "^2.6.4",
     "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
-    "eslint": "^8.45.0",
+    "eslint": "^9.25.0",
     "eslint-config-standard-with-typescript": "^37.0.0",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-n": "^15.0.0",
